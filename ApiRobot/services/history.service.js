@@ -22,6 +22,20 @@ getAllHistory = async () => {
       }
     },
     {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'user'
+      }
+    },
+    {
+      $unwind: {
+        path: '$user',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
       $project: {
         "timestamp": 1,
         "palatizedPieces": 1,
@@ -31,6 +45,12 @@ getAllHistory = async () => {
           "reference": 1,
           "ip_robot": 1,
           "nombre_pieces": 1
+        },
+        "user":
+        {
+          "_id": 1,
+          "nom": 1,
+          "prenom": 1
         }
       }
     }
@@ -70,7 +90,8 @@ addHistory = async (dataRobot) => {
       palatizedPieces,
       completedPallets,
       totalExecutionDuration: palatizedPieces * 10, // each iteration take 10 seconds
-      palatizeExecutionDuration: completedPallets * 10 * 100 // each palate have 100 piece and each piece take 10 sc 
+      palatizeExecutionDuration: completedPallets * 10 * 100, // each palate have 100 piece and each piece take 10 sc,
+      userId: existingRobot.userId
     }, { new: true });
 
   } else {
@@ -79,7 +100,8 @@ addHistory = async (dataRobot) => {
       robotId: existingRobot._id,
       palatizedPieces: 1,
       totalPieces: existingRobot.nombre_pieces,
-      timestamp: dataRobot.timestamp
+      timestamp: dataRobot.timestamp,
+      userId: existingRobot.userId
     });
     await history.save();
   }

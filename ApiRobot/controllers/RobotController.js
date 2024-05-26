@@ -80,15 +80,17 @@ exports.getRobotById = async (req, res) => {
 exports.createRobot = async (req, res) => {
     try {
         const existingRobot = await Robot.findOne({ reference: req.body.reference });
-        if (existingRobot) {
-            return res.status(400).json({ message: "Un autre robot existe déjà avec cette référence." });
-        }
-        console.log('##', {
+        
+        console.log({
             reference: req.body.reference,
             userId: req.body.userId,
             ip_robot: req.body.ip_robot,
             nombre_pieces: req.body.nombre_pieces
         });
+        if (existingRobot) {
+            return res.status(400).json({ message: "Un autre robot existe déjà avec cette référence." });
+        }
+
         const robot = new Robot({
             reference: req.body.reference,
             userId: req.body.userId,
@@ -121,6 +123,11 @@ exports.updateRobot = async (req, res) => {
         existingRobot.nombre_pieces = req.body.nombre_pieces;
 
         const updatedRobot = await existingRobot.save();
+
+        const history = await History.findOne({ robotId: existingRobot._id })
+        history.totalPieces = req.body.nombre_pieces
+        await history.save()
+
         return res.status(200).json(updatedRobot);
     } catch (error) {
         res.status(400).json({ message: error.message });

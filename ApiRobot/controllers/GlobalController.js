@@ -1,8 +1,8 @@
-const History = require('../models/entity/History');
-const Robot = require('../models/entity/Robot');
-const User = require('../models/entity/User');
-const { clientService } = require('../services/client.service');
-const { historyService } = require('../services/history.service');
+const History = require("../models/entity/History");
+const Robot = require("../models/entity/Robot");
+const User = require("../models/entity/User");
+const { clientService } = require("../services/client.service");
+const { historyService } = require("../services/history.service");
 
 exports.getAllLengthCollections = async (req, res) => {
   try {
@@ -10,17 +10,23 @@ exports.getAllLengthCollections = async (req, res) => {
     const robots = await Robot.find();
 
     let totalPieces = 0;
-    robots.forEach(robot => { totalPieces += robot.nombre_pieces; });
+    robots.forEach((robot) => {
+      totalPieces += robot.nombre_pieces;
+    });
 
     let piecesPalatizes = 0;
-    histories.forEach(hitory => { piecesPalatizes += parseFloat(hitory.palatizedPieces); });
-
+    histories.forEach((hitory) => {
+      piecesPalatizes += parseFloat(hitory.palatizedPieces);
+    });
+    console.log("robots,", robots);
     return res.json({
       countRobots: clientService.selectAllRobots().length,
-      robotsReference: clientService.selectAllRobots()?.map(robot => robot.username) || [],
+      robotsReference:
+        clientService.selectAllRobots()?.map((robot) => robot.username) || [],
+      robotInfo: robots || [],
       countUsers: clientService.selectAllUsers().length,
       totalNombrePieces: totalPieces,
-      totalNombrePiecesPalatizes: piecesPalatizes
+      totalNombrePiecesPalatizes: piecesPalatizes,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -29,22 +35,24 @@ exports.getAllLengthCollections = async (req, res) => {
 
 exports.getrobotStats = async (req, res) => {
   try {
-    const { reference, userId } = req.query || {}
+    const { reference, userId } = req.query || {};
 
     if (!reference && !userId) {
-      return res.status(400).json({ message: 'you need to specify a reference or a userId' })
+      return res
+        .status(400)
+        .json({ message: "you need to specify a reference or a userId" });
     }
 
     const filter = reference ? { reference } : { userId };
 
-    const robot = await Robot.findOne(filter)
+    const robot = await Robot.findOne(filter);
 
     if (!robot) {
-      return res.status(404).json({ message: 'robot not found' })
+      return res.status(404).json({ message: "robot not found" });
     }
 
     const history = await History.findOne({
-      robotId: robot._id
+      robotId: robot._id,
     });
 
     const user = await User.findById(robot.userId);
@@ -54,4 +62,3 @@ exports.getrobotStats = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-

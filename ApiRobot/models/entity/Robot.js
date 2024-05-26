@@ -6,7 +6,7 @@ const robotSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     default: new ObjectId()
   },
-  reference_robot: {
+  reference: {
     type: String,
     required: false
   },
