@@ -15,7 +15,7 @@ const Statistiques = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [options, setOptions] = useState({});
-
+  const [refetch, setRefetch] = useState()
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,13 +58,13 @@ const Statistiques = () => {
         state.wsClient.removeMessageListener(() => handleMessage(localOptions));
       };
     }
-  }, [reference]);
+  }, [reference,refetch]);
 
 
   const handleMessage = (dataSTR) => {
     try {
       fetchData(options)
-
+      setRefetch(!refetch)
     } catch (error) {
       console.error('Error parsing JSON:', error);
     }
@@ -106,25 +106,25 @@ const Statistiques = () => {
 
       <div className="row1">
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
-          <Card icon="pieces" title=" Pièces totales" value={data.history.totalPieces} />
+          <Card icon="pieces" title=" Pièces totales" value={data.history?.totalPieces} />
         </div>
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
-          <Card icon="pieces" title="Pièces palettisées" value={data.history.palatizedPieces} />
+          <Card icon="pieces" title="Pièces palettisées" value={data.history?.palatizedPieces} />
         </div>
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
-          <Card icon="pieces" title="Temps de fonctionnement" value={`${data.history.totalExecutionDuration} sec`} />
+          <Card icon="pieces" title="Temps de fonctionnement" value={`${data.history?.totalExecutionDuration} sec`} />
         </div>
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
-          <Card icon="pieces" title=" palette complet" value={`${data.history.completedPallets}`} />
+          <Card icon="pieces" title=" palette complet" value={`${data.history?.completedPallets}`} />
         </div>
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
-          <Card icon="pieces" title="Temps de palettisation" value={`${data.history.palatizeExecutionDuration} sec`} />
+          <Card icon="pieces" title="Temps de palettisation" value={`${data.history?.palatizeExecutionDuration} sec`} />
         </div>
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
-          <Card icon="pieces" title="Temps de prise" value={`${data.history.timeToPickup || 7} sec`} />
+          <Card icon="pieces" title="Temps de prise" value={`${data.history?.timeToPickup || 7} sec`} />
         </div>
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
-          <Card icon="pieces" title="Temps de retour" value={`${data.history.timeToReturn || 3} sec`} />
+          <Card icon="pieces" title="Temps de retour" value={`${data.history?.timeToReturn || 3} sec`} />
         </div>
         <div className="col-md-3" style={{ margin: "1%", width: "230px", height: "210px" }}>
           <Card icon="pieces" title="Ordre de Fabrication" value={` OF-1000-10000`} />

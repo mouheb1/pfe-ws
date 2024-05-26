@@ -8,9 +8,6 @@ import { useNavigate } from "react-router-dom"
 import { useEffect } from 'react';
 import { serviceUser } from '../services/http-client.service';
 
-
-
-
 const Sidebar = ({ user = {} }) => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState(-1);
@@ -22,7 +19,11 @@ const Sidebar = ({ user = {} }) => {
         navigate('/login');
     };
     useEffect(() => {
-        console.log('selected', selected);
+        if (!user.role && !localStorage.getItem('user')) {
+            localStorage.clear()
+            window.location.href = '/login';
+          }
+
         if (selected === 0) {
             navigate("/Dashboard");
         }
@@ -38,17 +39,14 @@ const Sidebar = ({ user = {} }) => {
         else if (selected === 4) {
             navigate("/Statistiques");
         }
-console.log('user.role', user.role);
+
         if (user.role === 'Admin') {
             setSideBarData(ADMIN_SIDE_BAR_DATA)
         } else {
             setSideBarData(USER_SIDE_BAR_DATA)
         }
 
-    }, [selected, user]);
-
-
-    console.log('sidebarData', sidebarData);
+    }, [selected, localStorage.getItem('user'), user]);
 
     return (
         <div className='Sidebar'>

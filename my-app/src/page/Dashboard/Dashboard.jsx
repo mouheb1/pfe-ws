@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [data, setData] = useState({
     countRobots: 0,
     robotsReference: [],
+    robotInfo: [],
     countUsers: 0,
     totalNombrePieces: 0,
     totalNombrePiecesPalatizes: 0
@@ -39,6 +40,7 @@ const Dashboard = () => {
   const handleMessage = (dataSTR) => {
     try {
       const dataJson = JSON.parse(dataSTR);
+      fetchData();
 
       if (!dataJson.hasOwnProperty('mode')) { console.error('Cant found mode'); return; }
       if (dataJson.mode == "cnx") {
@@ -48,12 +50,13 @@ const Dashboard = () => {
         setMssageResponse({ description: ` ${dataJson.username} is ${dataJson.status}` });
 
         if (dataJson.status == "CONNECTED" && dataJson.type == "ROBOT") {
-          const newRobotsReference = [...data.robotsReference, dataJson.username]
-          console.log('newRobotsReference', newRobotsReference);
+          const x = data?.robotInfo?.find(item => item.reference === dataJson.username)
+          console.log('xxxxx', x);
+
           setData(prevData => ({
             ...prevData,
             countRobots: prevData.countRobots++,
-            robotsReference: newRobotsReference
+            robotsReference: [...prevData.robotsReference, dataJson.username]
           }));
         }
         if (dataJson.status == "DISCONNECTED" && dataJson.type == "ROBOT") {
@@ -121,7 +124,6 @@ const Dashboard = () => {
     return arr;
   }
 
-  console.log('data', data);
   return (
     <div >
       <h2>Dashboard</h2>

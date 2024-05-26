@@ -11,7 +11,7 @@ import {
 } from 'mdb-react-ui-kit';
 
 
-export default function ProfilePage({ user }) {
+export default function ProfilePage({ user = {} }) {
   const {
     _id,
     nom,

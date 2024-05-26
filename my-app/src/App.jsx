@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Sidebar from './page/Sidebar';
 import ListUsers from './page/ListUsers';
 import ListRobot from './page/ListRobot';
@@ -20,10 +20,6 @@ function App() {
   const [user, setUser] = useState({})
   useEffect(() => {
     const localUser = JSON.parse(localStorage.getItem('user') || '{}')
-    if (!localUser) {
-      Navigate('/login');
-      localStorage.clear()
-    }
     setUser(localUser)
     state.wsClient.connect();
     return () => {
@@ -79,6 +75,7 @@ function MainContentWithSidebar({ user }) {
           {
             user.role === 'Admin' ? (
               <React.Fragment>
+                <Route path='/' element={<Dashboard />} />
                 <Route path='/Dashboard' element={<Dashboard />} />
                 <Route path='/ListUsers' element={<ListUsers />} />
                 <Route path='/ListRobot' element={<ListRobot />} />

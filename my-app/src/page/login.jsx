@@ -29,6 +29,7 @@ const LoginPage = () => {
         try {
             const response =  await serviceUser.signIn({email :  email, password : password } ) ;
             const responseJson = await response.json();
+            
           if (!response.ok) { 
             console.error('Login failed:', responseJson); 
             showAlert(responseJson.message); 
